@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t komronhon/docker-react -f Docker.dev .
+
+script:
+  - docker run -e CI=true komronhon/docker-react npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: "docker"
+  env: "Docker-env"
+  bucket-name: "$BUCKET_NAME"
+  bucket-path: "docker"
+  on:
+    branch: master
+  access_key_id: "$ACCESS_KEY"
+  secret_access_key: "$SECRET_KEY"
